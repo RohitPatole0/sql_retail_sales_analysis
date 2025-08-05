@@ -71,7 +71,7 @@ WHERE
 
 --cleaning null rows
 
---deleting rows with null quantity,price,cogs,total
+--deleting rows with null quantity,price,cogs,total sales
 DELETE FROM retail_sales
 WHERE 
     quantity IS NULL 
