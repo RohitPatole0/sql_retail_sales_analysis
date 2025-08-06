@@ -99,7 +99,7 @@ WHERE age IS NULL;
 
 The following SQL queries were developed to answer specific business questions:
 
-**Customer Behavior & Segmentation**
+**A.Customer Behavior & Segmentation**
 
 **Customer Lifetime Value (CLV)**
 
@@ -156,7 +156,7 @@ JOIN retail_sales rs ON coc.customer_id = rs.customer_id
 GROUP BY customer_type;
 ```
 
-**Time-Based Sales Trends**
+**B.Time-Based Sales Trends**
 
 **Monthly Sales Trend**:
 Aggregate total sales by month to identify peak months.
@@ -224,7 +224,7 @@ FROM retail_sales
 GROUP BY day_of_week
 ```
 
-**Product Category Insights**
+**C.Product Category Insights**
 
 **Top Performing Product Categories**:
 Rank categories by total sales, average price, and quantity sold.
@@ -262,7 +262,7 @@ GROUP BY category
 ORDER BY avg_basket_size DESC;
 ```
 
-**Financial & Profitability Metrics**
+**D.Financial & Profitability Metrics**
 
 **Gross Margin per Transaction**:
 For each transaction, calculate the gross margin percentage:((total_sale - cogs) / total_sale) * 100
@@ -290,7 +290,7 @@ FROM retail_sales
 GROUP BY margin;
 ```
 
-**Advanced Analytics**
+**E.Advanced Analytics**
 
 **RFM Analysis (Recency, Frequency, Monetary)**:
 
@@ -341,7 +341,7 @@ SELECT *,
 FROM retail_sales;
 ```
 
-**Data Quality & Anomalies**
+**F.Data Quality & Anomalies**
 
 **Detect Outliers**:
 Identify transactions with unusually high or low quantity, price, or total_sale using percentiles.
