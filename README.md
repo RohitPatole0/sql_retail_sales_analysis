@@ -106,18 +106,18 @@ The following SQL queries were developed to answer specific business questions:
 **Calculate the total sales made by each customer and identify the top 10 most valuable customers**:
 Calculate the total sales made by each customer and identify the top 10 most valuable customers.
 
-'''sql
+```sql
 SELECT customer_id, SUM(total_sale) as total_spent
 FROM retail_sales
 GROUP BY customer_id
 ORDER BY total_spent DESC
 LIMIT 10;
-'''
+```
 
 **Customer Segmentation by Age Group & Gender**:
 Create customer segments (e.g., 18–25, 26–35, 46-60).
 
-'''sql
+```sql
 SELECT 
     CASE 
         WHEN age BETWEEN 18 AND 25 THEN '18-25'
@@ -133,12 +133,12 @@ SELECT
 FROM retail_sales
 GROUP BY age_group, gender
 ORDER BY avg_order_value DESC;
-'''
+```
 
 **Repeat Customers vs. One-Time Shoppers**:
 Identify customers with more than one transaction and compare their average purchase size to one-time buyers.
 
-'''sql
+```sql
 WITH customer_order_counts AS (
     SELECT customer_id, COUNT(*) AS order_count
     FROM retail_sales
@@ -154,14 +154,14 @@ SELECT
 FROM customer_order_counts coc
 JOIN retail_sales rs ON coc.customer_id = rs.customer_id
 GROUP BY customer_type;
-'''
+```
 
 **Time-Based Sales Trends**
 
 **Monthly Sales Trend**:
 Aggregate total sales by month to identify peak months.
 
-'''sql
+```sql
 SELECT 
     EXTRACT(MONTH FROM sale_date::date) AS month,
 	COUNT(*) as no_of_sales,
@@ -169,12 +169,12 @@ SELECT
 FROM retail_sales
 GROUP BY month
 ORDER BY monthly_sales DESC;
-'''
+```
 
 Hourly Sales Analysis:
 Determine the busiest hours of the day and compare morning vs. evening sales patterns.
 
-'''sql
+```sql
 WITH hourly_sales as (
     SELECT *, 
 		EXTRACT(HOUR FROM sale_time::TIME) as sale_hour
@@ -206,12 +206,12 @@ FROM day_part_sales
 GROUP BY part_of_day;
 
 --comment out one of the queries to execute
-'''
+```
 
 **Weekday vs. Weekend Sales Performance**:
 Classify days as weekday/weekend. Compare total sales, average quantity, and customer count.
 
-'''sql
+```sql
 SELECT 
 	CASE
 		WHEN EXTRACT('dow' FROM sale_date) IN (0,6) THEN 'Weekend'
@@ -222,14 +222,14 @@ SELECT
 	COUNT(customer_id) as customer_count
 FROM retail_sales
 GROUP BY day_of_week
-'''
+```
 
 **Product Category Insights**
 
 **Top Performing Product Categories**:
 Rank categories by total sales, average price, and quantity sold.
 
-'''sql
+```sql
 SELECT category,
 	SUM(total_sale) as total_sales,
 	AVG(price_per_unit) as avg_price,
@@ -237,49 +237,49 @@ SELECT category,
 FROM retail_sales
 GROUP BY category
 ORDER BY total_sales DESC;
-'''
+```
 
 **Profitability by Category**:
 Calculate gross profit (total_sale - cogs) for each product category.
 
-'''sql
+```sql
 SELECT category,
 	SUM(total_sale - cogs) AS gross_profit,
 	AVG(total_sale - cogs) AS avg_profit_per_sale
 FROM retail_sales
 GROUP BY category
 ORDER BY gross_profit;
-'''
+```
 
 **Basket Size by Category**:
 Find the average quantity purchased per transaction for each category.
 
-'''sql
+```sql
 SELECT category,
 	AVG(quantity) as avg_basket_size
 FROM retail_sales
 GROUP BY category
 ORDER BY avg_basket_size DESC;
-'''
+```
 
 **Financial & Profitability Metrics**
 
 **Gross Margin per Transaction**:
 For each transaction, calculate the gross margin percentage:((total_sale - cogs) / total_sale) * 100
 
-'''sql
+```sql
 SELECT transaction_id,
        total_sale,
        cogs,
 	   (((total_sale - cogs) / total_sale) * 100) as gross_margin_perc
 FROM retail_sales
 ORDER BY gross_margin_perc DESC;
-'''
+```
 
 **High Margin vs. Low Margin Sales**:
 Classify transactions based on gross margin thresholds (e.g., high > 40%) and count frequency.
 
-'''sql
+```sql
 SELECT 
     CASE 
 		WHEN (((total_sale - cogs) / total_sale) * 100) > 40 THEN 'High Margin'
@@ -288,13 +288,13 @@ SELECT
 	COUNT(*) AS transaction_count
 FROM retail_sales
 GROUP BY margin;
-'''
+```
 
 **Advanced Analytics**
 
 **RFM Analysis (Recency, Frequency, Monetary)**:
 
-'''sql
+```sql
 WITH rfm_base AS (
     SELECT customer_id,
            MAX(sale_date::DATE) AS last_purchase,
@@ -312,12 +312,12 @@ SELECT r.customer_id,
        frequency,
        monetary
 FROM rfm_base r;
-'''
+```
 
 **Rolling Monthly Average Sales**:
 Calculate 3-month rolling average sales.
 
-'''sql
+```sql
 SELECT 
     EXTRACT(MONTH FROM sale_date::DATE) AS month,
     category,
@@ -330,23 +330,23 @@ SELECT
 FROM retail_sales
 GROUP BY month, category
 ORDER BY month;	
-'''
+```
 
 **Rank Sales by Customer**:
 Rank each transaction per customer by total_sale descending.
 
-'''sql
+```sql
 SELECT *,
        RANK() OVER (PARTITION BY customer_id ORDER BY total_sale DESC) AS sale_rank
 FROM retail_sales;
-'''
+```
 
 **Data Quality & Anomalies**
 
 **Detect Outliers**:
 Identify transactions with unusually high or low quantity, price, or total_sale using percentiles.
 
-'''sql
+```sql
 SELECT *
 FROM retail_sales
 WHERE quantiy > (
@@ -355,12 +355,12 @@ WHERE quantiy > (
 OR price_per_unit > (
     SELECT PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY price_per_unit) FROM retail_sales
 );
-'''
+```
 
 **Customer Age Outliers**:
 Check for unreasonable ages (e.g., < 18 or > 90).
 
-'''sql
+```sql
 SELECT 
     COUNT(*) AS invalid_ages,
     AVG(age) AS avg_age,
@@ -368,4 +368,4 @@ SELECT
 FROM retail_sales
 WHERE age < 18 OR age > 90
 GROUP BY category;
-'''
+```
