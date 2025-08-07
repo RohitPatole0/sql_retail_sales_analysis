@@ -89,7 +89,6 @@ LIMIT 10;
 --Customer Segmentation by Age Group & Gender--:
 --Create customer segments (e.g., 18–25, 26–35, 46-60).
 
- 
 SELECT 
     CASE 
         WHEN age BETWEEN 18 AND 25 THEN '18-25'
@@ -143,8 +142,8 @@ GROUP BY month
 ORDER BY monthly_sales DESC;
  
 
-Hourly Sales Analysis:
-Determine the busiest hours of the day and compare morning vs. evening sales patterns.
+--Hourly Sales Analysis:
+--Determine the busiest hours of the day and compare morning vs. evening sales patterns.
 
  
 WITH hourly_sales as (
@@ -181,7 +180,7 @@ GROUP BY part_of_day;
  
 
 --Weekday vs. Weekend Sales Performance--:
-Classify days as weekday/weekend. Compare total sales, average quantity, and customer count.
+--Classify days as weekday/weekend. Compare total sales, average quantity, and customer count.
 
  
 SELECT 
@@ -199,7 +198,7 @@ GROUP BY day_of_week
 --C.Product Category Insights--
 
 --Top Performing Product Categories--:
-Rank categories by total sales, average price, and quantity sold.
+--Rank categories by total sales, average price, and quantity sold.
 
  
 SELECT category,
@@ -212,7 +211,7 @@ ORDER BY total_sales DESC;
  
 
 --Profitability by Category--:
-Calculate gross profit (total_sale - cogs) for each product category.
+--Calculate gross profit (total_sale - cogs) for each product category.
 
  
 SELECT category,
@@ -224,7 +223,7 @@ ORDER BY gross_profit;
  
 
 --Basket Size by Category--:
-Find the average quantity purchased per transaction for each category.
+--Find the average quantity purchased per transaction for each category.
 
  
 SELECT category,
@@ -237,7 +236,7 @@ ORDER BY avg_basket_size DESC;
 --D.Financial & Profitability Metrics--
 
 --Gross Margin per Transaction--:
-For each transaction, calculate the gross margin percentage:((total_sale - cogs) / total_sale) * 100
+--For each transaction, calculate the gross margin percentage:((total_sale - cogs) / total_sale) * 100
 
  
 SELECT transaction_id,
@@ -249,7 +248,7 @@ ORDER BY gross_margin_perc DESC;
  
 
 --High Margin vs. Low Margin Sales--:
-Classify transactions based on gross margin thresholds (e.g., high > 40%) and count frequency.
+--Classify transactions based on gross margin thresholds (e.g., high > 40%) and count frequency.
 
  
 SELECT 
@@ -287,7 +286,7 @@ FROM rfm_base r;
  
 
 --Rolling Monthly Average Sales--:
-Calculate 3-month rolling average sales.
+--Calculate 3-month rolling average sales.
 
  
 SELECT 
@@ -305,7 +304,7 @@ ORDER BY month;
  
 
 --Rank Sales by Customer--:
-Rank each transaction per customer by total_sale descending.
+--Rank each transaction per customer by total_sale descending.
 
  
 SELECT *,
@@ -316,7 +315,7 @@ FROM retail_sales;
 --F.Data Quality & Anomalies--
 
 --Detect Outliers--:
-Identify transactions with unusually high or low quantity, price, or total_sale using percentiles.
+--Identify transactions with unusually high or low quantity, price, or total_sale using percentiles.
 
  
 SELECT *
@@ -330,7 +329,7 @@ OR price_per_unit > (
  
 
 --Customer Age Outliers--:
-Check for unreasonable ages (e.g., < 18 or > 90).
+--Check for unreasonable ages (e.g., < 18 or > 90).
 
 SELECT 
     COUNT(*) AS invalid_ages,
@@ -339,4 +338,3 @@ SELECT
 FROM retail_sales
 WHERE age < 18 OR age > 90
 GROUP BY category;
-
