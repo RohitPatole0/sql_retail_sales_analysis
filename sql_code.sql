@@ -1,21 +1,4 @@
-# sql_retail_sales_analysis
-This project is designed to demonstrate SQL skills and techniques typically used by data analysts to explore, clean, and analyze retail sales data. The project involves setting up a retail sales database, performing exploratory data analysis (EDA), and answering specific business questions through SQL queries.
-
-## Objectives
-
-1. **Set up a retail sales database**: Create and populate a retail sales database with the provided sales data.
-2. **Data Cleaning**: Identify and remove any records with missing or null values.
-3. **Exploratory Data Analysis (EDA)**: Perform basic exploratory data analysis to understand the dataset.
-4. **Business Analysis**: Use SQL to answer specific business questions and derive insights from the sales data.
-
-## Project Structure
-
-### 1. Database Setup
-
-- **Database Creation**: The project started by creating a database named `retail_sales_db`.
-- **Table Creation**: A table named `retail_sales` is created to store the sales data. The table structure includes columns for transaction ID, sale date, sale time, customer ID, gender, age, product category, quantity sold, price per unit, cost of goods sold (COGS), and total sale amount.
-
-```sql
+--Database setup
 CREATE DATABASE retail_sales_db;
 
 CREATE TABLE retail_sales
@@ -32,16 +15,7 @@ CREATE TABLE retail_sales
     cogs FLOAT,
     total_sale FLOAT
 );
-```
 
-### 2. Data Exploration & Cleaning
-
-- **Record Count**: Determine the total number of records in the dataset.
-- **Customer Count**: Find out how many unique customers are in the dataset.
-- **Category Count**: Identify all unique product categories in the dataset.
-- **Null Value Check**: Check for any null values in the dataset and delete records with missing data.
-
-```sql
 --Data exploration and cleaning
 
 --record count 
@@ -94,29 +68,27 @@ SET age = (
     WHERE category_avg.category = retail_sales.category
 )
 WHERE age IS NULL;
-```
-### 3. Data Analysis & Findings
 
-The following SQL queries were developed to answer specific business questions:
+--Data Analysis & Findings
 
-**A.Customer Behavior & Segmentation**
+--The following SQL queries were developed to answer specific business questions:
 
-**Customer Lifetime Value (CLV)**
+--A.Customer Behavior & Segmentation--
 
-**Calculate the total sales made by each customer and identify the top 10 most valuable customers**:
+--Customer Lifetime Value (CLV)--
 
-```sql
+--Calculate the total sales made by each customer and identify the top 10 most valuable customers--:
+ 
 SELECT customer_id, SUM(total_sale) as total_spent
 FROM retail_sales
 GROUP BY customer_id
 ORDER BY total_spent DESC
 LIMIT 10;
-```
+ 
 
-**Customer Segmentation by Age Group & Gender**:
-Create customer segments (e.g., 18–25, 26–35, 46-60).
+--Customer Segmentation by Age Group & Gender--:
+--Create customer segments (e.g., 18–25, 26–35, 46-60).
 
-```sql
 SELECT 
     CASE 
         WHEN age BETWEEN 18 AND 25 THEN '18-25'
@@ -132,12 +104,12 @@ SELECT
 FROM retail_sales
 GROUP BY age_group, gender
 ORDER BY avg_order_value DESC;
-```
+ 
 
-**Repeat Customers vs. One-Time Shoppers**:
-Identify customers with more than one transaction and compare their average purchase size to one-time buyers.
+--Repeat Customers vs. One-Time Shoppers--:
+--Identify customers with more than one transaction and compare their average purchase size to one-time buyers.
 
-```sql
+ 
 WITH customer_order_counts AS (
     SELECT customer_id, COUNT(*) AS order_count
     FROM retail_sales
@@ -153,14 +125,14 @@ SELECT
 FROM customer_order_counts coc
 JOIN retail_sales rs ON coc.customer_id = rs.customer_id
 GROUP BY customer_type;
-```
+ 
 
-**B.Time-Based Sales Trends**
+--B.Time-Based Sales Trends--
 
-**Monthly Sales Trend**:
+--Monthly Sales Trend--:
 Aggregate total sales by month to identify peak months.
 
-```sql
+ 
 SELECT 
     EXTRACT(MONTH FROM sale_date::date) AS month,
 	COUNT(*) as no_of_sales,
@@ -168,12 +140,12 @@ SELECT
 FROM retail_sales
 GROUP BY month
 ORDER BY monthly_sales DESC;
-```
+ 
 
-Hourly Sales Analysis:
-Determine the busiest hours of the day and compare morning vs. evening sales patterns.
+--Hourly Sales Analysis:
+--Determine the busiest hours of the day and compare morning vs. evening sales patterns.
 
-```sql
+ 
 WITH hourly_sales as (
     SELECT *, 
 		EXTRACT(HOUR FROM sale_time::TIME) as sale_hour
@@ -205,12 +177,12 @@ FROM day_part_sales
 GROUP BY part_of_day;
 
 --comment out one of the queries to execute
-```
+ 
 
-**Weekday vs. Weekend Sales Performance**:
-Classify days as weekday/weekend. Compare total sales, average quantity, and customer count.
+--Weekday vs. Weekend Sales Performance--:
+--Classify days as weekday/weekend. Compare total sales, average quantity, and customer count.
 
-```sql
+ 
 SELECT 
 	CASE
 		WHEN EXTRACT('dow' FROM sale_date) IN (0,6) THEN 'Weekend'
@@ -221,14 +193,14 @@ SELECT
 	COUNT(customer_id) as customer_count
 FROM retail_sales
 GROUP BY day_of_week
-```
+ 
 
-**C.Product Category Insights**
+--C.Product Category Insights--
 
-**Top Performing Product Categories**:
-Rank categories by total sales, average price, and quantity sold.
+--Top Performing Product Categories--:
+--Rank categories by total sales, average price, and quantity sold.
 
-```sql
+ 
 SELECT category,
 	SUM(total_sale) as total_sales,
 	AVG(price_per_unit) as avg_price,
@@ -236,49 +208,49 @@ SELECT category,
 FROM retail_sales
 GROUP BY category
 ORDER BY total_sales DESC;
-```
+ 
 
-**Profitability by Category**:
-Calculate gross profit (total_sale - cogs) for each product category.
+--Profitability by Category--:
+--Calculate gross profit (total_sale - cogs) for each product category.
 
-```sql
+ 
 SELECT category,
 	SUM(total_sale - cogs) AS gross_profit,
 	AVG(total_sale - cogs) AS avg_profit_per_sale
 FROM retail_sales
 GROUP BY category
 ORDER BY gross_profit;
-```
+ 
 
-**Basket Size by Category**:
-Find the average quantity purchased per transaction for each category.
+--Basket Size by Category--:
+--Find the average quantity purchased per transaction for each category.
 
-```sql
+ 
 SELECT category,
 	AVG(quantity) as avg_basket_size
 FROM retail_sales
 GROUP BY category
 ORDER BY avg_basket_size DESC;
-```
+ 
 
-**D.Financial & Profitability Metrics**
+--D.Financial & Profitability Metrics--
 
-**Gross Margin per Transaction**:
-For each transaction, calculate the gross margin percentage:((total_sale - cogs) / total_sale) * 100
+--Gross Margin per Transaction--:
+--For each transaction, calculate the gross margin percentage:((total_sale - cogs) / total_sale) * 100
 
-```sql
+ 
 SELECT transaction_id,
        total_sale,
        cogs,
 	   (((total_sale - cogs) / total_sale) * 100) as gross_margin_perc
 FROM retail_sales
 ORDER BY gross_margin_perc DESC;
-```
+ 
 
-**High Margin vs. Low Margin Sales**:
-Classify transactions based on gross margin thresholds (e.g., high > 40%) and count frequency.
+--High Margin vs. Low Margin Sales--:
+--Classify transactions based on gross margin thresholds (e.g., high > 40%) and count frequency.
 
-```sql
+ 
 SELECT 
     CASE 
 		WHEN (((total_sale - cogs) / total_sale) * 100) > 40 THEN 'High Margin'
@@ -287,13 +259,13 @@ SELECT
 	COUNT(*) AS transaction_count
 FROM retail_sales
 GROUP BY margin;
-```
+ 
 
-**E.Advanced Analytics**
+--E.Advanced Analytics--
 
-**RFM Analysis (Recency, Frequency, Monetary)**:
+--RFM Analysis (Recency, Frequency, Monetary)--:
 
-```sql
+ 
 WITH rfm_base AS (
     SELECT customer_id,
            MAX(sale_date::DATE) AS last_purchase,
@@ -311,12 +283,12 @@ SELECT r.customer_id,
        frequency,
        monetary
 FROM rfm_base r;
-```
+ 
 
-**Rolling Monthly Average Sales**:
-Calculate 3-month rolling average sales.
+--Rolling Monthly Average Sales--:
+--Calculate 3-month rolling average sales.
 
-```sql
+ 
 SELECT 
     EXTRACT(MONTH FROM sale_date::DATE) AS month,
     category,
@@ -329,23 +301,23 @@ SELECT
 FROM retail_sales
 GROUP BY month, category
 ORDER BY month;	
-```
+ 
 
-**Rank Sales by Customer**:
-Rank each transaction per customer by total_sale descending.
+--Rank Sales by Customer--:
+--Rank each transaction per customer by total_sale descending.
 
-```sql
+ 
 SELECT *,
        RANK() OVER (PARTITION BY customer_id ORDER BY total_sale DESC) AS sale_rank
 FROM retail_sales;
-```
+ 
 
-**F.Data Quality & Anomalies**
+--F.Data Quality & Anomalies--
 
-**Detect Outliers**:
-Identify transactions with unusually high or low quantity, price, or total_sale using percentiles.
+--Detect Outliers--:
+--Identify transactions with unusually high or low quantity, price, or total_sale using percentiles.
 
-```sql
+ 
 SELECT *
 FROM retail_sales
 WHERE quantiy > (
@@ -354,12 +326,11 @@ WHERE quantiy > (
 OR price_per_unit > (
     SELECT PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY price_per_unit) FROM retail_sales
 );
-```
+ 
 
-**Customer Age Outliers**:
-Check for unreasonable ages (e.g., < 18 or > 90).
+--Customer Age Outliers--:
+--Check for unreasonable ages (e.g., < 18 or > 90).
 
-```sql
 SELECT 
     COUNT(*) AS invalid_ages,
     AVG(age) AS avg_age,
@@ -367,4 +338,3 @@ SELECT
 FROM retail_sales
 WHERE age < 18 OR age > 90
 GROUP BY category;
-```
